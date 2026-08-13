@@ -1,11 +1,11 @@
 import asyncio
 import logging
+import os
 from aiogram import Bot, Dispatcher, F, types
 
-# Токен вашего бота, полученный от @BotFather
-TOKEN = "ТОКЕН_ВАШЕГО_БОТА"
+# Токен подтягивается из переменных окружения сервера
+TOKEN = os.getenv("TOKEN")
 
-# Пачка запрещенных слов (всегда пишите их в нижнем регистре)
 BANNED_WORDS = {
     "холодный",
     "думайте",
@@ -29,11 +29,8 @@ dp = Dispatcher()
 @dp.message(F.text)
 async def filter_messages(message: types.Message):
     text_lower = message.text.lower()
-    
-    # Проверяем, есть ли хоть одно слово из списка в тексте сообщения
     if any(word in text_lower for word in BANNED_WORDS):
         try:
-            # Удаляем сообщение нарушителя
             await message.delete()
         except Exception as e:
             logging.error(f"Не удалось удалить сообщение: {e}")
