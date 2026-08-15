@@ -4,10 +4,8 @@ import os
 import re
 from aiogram import Bot, Dispatcher, F, types
 
-# Токен подтягивается из переменных окружения сервера
 TOKEN = os.getenv("TOKEN")
 
-# Ваши слова и фразы (все переведены в нижний регистр для точного поиска)
 BANNED_WORDS = {
     "холодный",
     "думайте",
@@ -48,13 +46,10 @@ async def filter_messages(message: types.Message):
     is_banned = False
     for word in BANNED_WORDS:
         if " " in word:
-            # Если это фраза с пробелом (например, "на подумайть"), ищем её целиком в тексте
             if word in text_lower:
                 is_banned = True
                 break
         else:
-            # Если это отдельное слово (например, "xd", "хд", "коч"), 
-            # ищем строго по границам слов, чтобы не задевать другие части текста
             pattern = r'\b' + re.escape(word) + r'\b'
             if re.search(pattern, text_lower):
                 is_banned = True
