@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import os
-import re
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
 from aiogram import Bot, Dispatcher, F, types
@@ -9,33 +8,21 @@ from aiogram import Bot, Dispatcher, F, types
 TOKEN = os.getenv("TOKEN")
 
 BANNED_WORDS = {
-    "холодный",
-    "думайте",
-    "размышляйте",
-    "думойте",
-    "халадный",
-    "XD",
-    "Xd",
-    "xD",
+    "холодн",
+    "думайт",
+    "размышляйт",
+    "думойт",
+    "халадн",
+    "xd",
     "хд",
-    "ХД",
-    "Хд",
-    "хД",
     "эксди",
     "думай",
     "doomай",
     "коч",
     "на подумайть",
     "наподумать",
-    "Засчитано",
-    "засчитано",
-    "Зосчитано",
-    "Холодные",
-    "Халодные",
-    "Халадные",
-    "холодные",
-    "халодные",
-    "xd"
+    "засчитан",
+    "зосчитан"
 }
 
 class SimpleHandler(BaseHTTPRequestHandler):
@@ -59,19 +46,7 @@ dp = Dispatcher()
 async def filter_messages(message: types.Message):
     text_lower = message.text.lower()
     
-    is_banned = False
-    for word in BANNED_WORDS:
-        if " " in word:
-            if word in text_lower:
-                is_banned = True
-                break
-        else:
-            pattern = r'\b' + re.escape(word) + r'\b'
-            if re.search(pattern, text_lower):
-                is_banned = True
-                break
-
-    if is_banned:
+    if any(word in text_lower for word in BANNED_WORDS):
         try:
             await message.delete()
         except Exception as e:
